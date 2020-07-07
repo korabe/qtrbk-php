@@ -1,0 +1,20 @@
+{
+  "config": {
+    "vendor-dir": "vendor"
+  },
+  "name": "korabe/qbdatagenerator",
+  "description": "Generate QB data",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "jrod336",
+      "email": "jared@korabedesign.com"
+    }
+  ],
+  "require": {
+    "fzaninotto/faker": "^1.9",
+    "components/bootstrap": "^4.5",
+    "fortawesome/font-awesome": "^5.13"
+  }
+}
