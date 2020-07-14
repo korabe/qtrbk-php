@@ -1,0 +1,15 @@
+{
+    "name": "korabe/qtrbk-php",
+    "description": "Korabe's PHP bindings for QtrBk",
+    "type": "library",
+    "license": "Apache-2.0",
+    "autoload": {
+        "psr-4": {"QtrBk\\": "src/"}
+    },
+    "require": {
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.2"
+    },
+    "minimum-stability": "dev"
+}
