@@ -3,12 +3,25 @@
     "description": "Korabe's PHP bindings for QtrBk",
     "type": "library",
     "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "jrod336",
+            "email": "jared@korabedesign.com"
+        },
+        {
+            "name": "Bryon Bean",
+            "email" : "bryon@korabedesign.com"
+        }
+    ],
     "autoload": {
         "psr-4": {"QtrBk\\": "src/"}
     },
     "require": {
+        "components/bootstrap": "^4.5",
+        "fortawesome/font-awesome": "^5.13"
     },
     "require-dev": {
+        "fzaninotto/faker": "^1.9",
         "phpunit/phpunit": "^9.2"
     },
     "minimum-stability": "dev"
