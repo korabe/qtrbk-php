@@ -1,15 +1,3 @@
-# qtrbk-php
-PHP Bindings for Qtrbk
-
-## Install
-
-```php
-composer install korabe/qtrbk-php
-```
-
-## Example
-
-```php
 <?php
 
 require "vendor/autoload.php";
@@ -24,9 +12,9 @@ $qbxml_rq = file_get_contents($host_query_xml);
 $qtrbk->process($qbxml_rq);
 
 if ($qtrbk->hasErrors()) {
+    echo "{$qtrbk->getQbXmlResponse()}\n";
     echo "{$qtrbk->getErrors()}\n";
     exit($qtrbk->getExitCode());
 }
 
 echo "{$qtrbk->getQbXmlResponse()}\n";
-```
