@@ -4,46 +4,98 @@ declare(strict_types=1);
 namespace QtrBk;
 
 use FFI;
+use RuntimeException;
 
 /**
  * Class QtrBk
  * @package QtrBk
  */
-class QtrBk
+final class QtrBk
 {
     const QTRBK_DLL = "QtrBkLib.dll";
 
-    protected $ffi;
+    private static $ffi;
+    private $qb;
 
-    public function __construct()
+    /**
+     * QtrBk constructor.
+     * @param ?resource $ffi
+     * @throws RuntimeException
+     */
+    public function __construct($ffi = null)
     {
         if (!extension_loaded("ffi")) {
-            throw new \Exception("Could not load FFI: extension not found");
+            throw new RuntimeException("Could not load FFI: extension not found");
         }
 
-        $cdef = [
-            "struct qtrbk {",
-            "const char * request;",
-            "const char * response;",
-            "const char * error;",
-            "int err;",
-            "};",
-            "char * process_request(struct qtrbk * qb);",
-            "const struct qtrbk* create_qtrbk(const char * xml);",
-        ];
+        self::$ffi = $ffi;
 
-        $this->ffi = FFI::cdef(implode(PHP_EOL, $cdef), self::QTRBK_DLL);
+        if (!self::$ffi) {
+            self::$ffi = \FFI::cdef("
+                struct qtrbk {
+                    const char * request;
+                    const char * response;
+                    const char * error;
+                    int err;
+                };
+                void process_request(struct qtrbk * qb);
+                struct qtrbk* create_qtrbk(const char * xml);
+            ", self::QTRBK_DLL);
+        }
     }
 
     /**
      * @param string $xml
-     * @return Response
+     * @return QtrBk
      */
-    public function process(string $xml): Response
+    public function process(string $xml): self
     {
-        $request = $this->ffi->create_qtrbk($xml);
-        $this->ffi->process_request($request);
-        return new Response($request);
+        $this->qb = self::$ffi->create_qtrbk($xml);
+        self::$ffi->process_request($this->qb);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasErrors(): bool
+    {
+        if (is_object($this->qb)) {
+            return ($this->qb->err !== 0);
+        }
+        return false;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExitCode(): int
+    {
+        return is_object($this->qb) ? $this->qb->err : 0;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrors(): string
+    {
+        return  is_object($this->qb) ? FFI::string($this->qb->error) : '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getQbXmlResponse(): string
+    {
+        return is_object($this->qb) ? FFI::string($this->qb->response) : '';
+    }
+
+    /**
+     * @return mixed
+     */
+    public static function getFFI()
+    {
+        return self::$ffi;
     }
 }
 
