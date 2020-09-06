@@ -14,6 +14,7 @@ final class QtrBk
 {
     const QTRBK_DLL = "QtrBkLib.dll";
 
+    private static $dll;
     private static $ffi;
     private $qb;
 
@@ -30,6 +31,8 @@ final class QtrBk
 
         self::$ffi = $ffi;
 
+        self::$dll = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . self::QTRBK_DLL;
+
         if (!self::$ffi) {
             self::$ffi = \FFI::cdef("
                 struct qtrbk {
@@ -40,7 +43,7 @@ final class QtrBk
                 };
                 void process_request(struct qtrbk * qb);
                 struct qtrbk* create_qtrbk(const char * xml);
-            ", self::QTRBK_DLL);
+            ", self::$dll);
         }
     }
 
